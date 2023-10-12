@@ -33,12 +33,19 @@ const LandingSection = () => {
       type: Yup.string()
         .required("Required"),
       comment: Yup.string()
-        .required("Required")
-        .min("Must be atleast 15 characters")
+        .required("Required"),
     }),
   });
 
   
+  useEffect(() => { 
+    if (response) { 
+      onOpen(response.type, response.message); 
+      if (response.type === 'success') { 
+        formik.resetForm(); 
+      } 
+    } 
+  }, [response]); 
 
   return (
     <FullScreenSection
@@ -85,7 +92,7 @@ const LandingSection = () => {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="type">Type of enquiry</FormLabel>
-                <Select id="type" name="type">
+                <Select id="type" name="type" {...formik.getFieldProps("type")}>
                   <option value="hireMe">Freelance project proposal</option>
                   <option value="openSource">
                     Open source consultancy session
@@ -102,13 +109,13 @@ const LandingSection = () => {
                   {...formik.getFieldProps("comment")}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.email}
+                  value={formik.values.comment}
                 />
                 <FormErrorMessage>
                 {formik.errors.comment}
                 </FormErrorMessage>
               </FormControl>
-              <Button type="submit" colorScheme="purple" width="full">
+              <Button type="submit" colorScheme="purple" width="full" isLoading={isLoading}>
                 Submit
               </Button>
             </VStack>
